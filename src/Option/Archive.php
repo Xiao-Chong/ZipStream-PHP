@@ -63,7 +63,7 @@ final class Archive
      *
      * @var bool
      */
-    private $zeroHeader = false;
+    private $zeroHeader = true;
     /**
      * Enable reading file stat for determining file size.
      * When a 32-bit system reads file size that is

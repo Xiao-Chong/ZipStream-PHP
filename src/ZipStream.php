@@ -76,11 +76,11 @@ class ZipStream
      * software used to encode the file.  The value/10
      * indicates the major version number, and the value
      * mod 10 is the minor version number.
-     * Here we are using 6 for the OS, indicating OS/2 H.P.F.S.
-     * to prevent file permissions issues upon extract (see #84)
-     * 0x603 is 00000110 00000011 in binary, so 6 and 3
+     * Because modern PHP is UTF8 by nature and best 
+     * host to simulate zip/unzip app is *nix (0x03).
+     * The best simulation version is 4.5 (0x2D).
      */
-    const ZIP_VERSION_MADE_BY = 0x603;
+    const ZIP_VERSION_MADE_BY = 0x32D;
 
     /**
      * The following signatures end with 0x4b50, which in ASCII is PK,
@@ -293,6 +293,9 @@ class ZipStream
         $options->defaultTo($this->opt);
 
         $file = new File($this, $name, $options);
+        $fstat = fstat($stream);
+        if ($fstat != false) 
+            $file->permission = $fstat['mode'];
         $file->processStream(new DeflateStream($stream));
     }
 

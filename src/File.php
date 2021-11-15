@@ -72,6 +72,9 @@ class File
      */
     public $zip;
 
+    /** @var  int */
+    public $permission;
+
     /**
      * @var resource
      */
@@ -101,10 +104,17 @@ class File
         $this->method = $this->opt->getMethod();
         $this->version = Version::STORE();
         $this->ofs = new Bigint();
+        // if BIT_ZERO_HEADER is set, crc should be 0
+        $this->crc = 0;
+        // file permission = rw,rw,rw
+        $this->permission =  0100666;
     }
 
     public function processPath(string $path): void
     {
+        $stat = stat($path);
+        $this->permission = $stat['mode'];
+
         if (!is_readable($path)) {
             if (!file_exists($path)) {
                 throw new FileNotFoundException($path);
@@ -121,6 +131,7 @@ class File
             $this->processStream($stream);
             $stream->close();
         }
+
     }
 
     public function processData(string $data): void
@@ -293,13 +304,6 @@ class File
             $this->version = Version::ZIP64();
         }
 
-        if ($this->bits & self::BIT_EFS_UTF8) {
-            // Put the tricky entry to
-            // force Linux unzip to lookup EFS flag.
-            $fields[] = ['v', 0x5653];  // Choose 'ZS' for proprietary usage
-            $fields[] = ['v', 0x0000];  // zero length
-        }
-
         return ZipStream::packFields($fields);
     }
 
@@ -470,7 +474,7 @@ class File
             ['v', strlen($comment)],                // Length of comment
             ['v', 0],                               // Disk number
             ['v', 0],                               // Internal File Attributes
-            ['V', 32],                              // External File Attributes
+            ['V', $this->permission << 16],        // External File Attributes
             ['V', $this->ofs->getLowFF()]           // Relative offset of local header
         ];
 

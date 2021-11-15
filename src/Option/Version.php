@@ -16,7 +16,9 @@ use MyCLabs\Enum\Enum;
  */
 class Version extends Enum
 {
-    const STORE = 0x000A; // 1.00
+    // upper 2 byte is minimum file system compatibility
+    // lower 2 byte is version
+    const STORE = 0x000A; // 1.00 with MS-DOS and OS/2
     const DEFLATE = 0x0014; // 2.00
     const ZIP64 = 0x002D; // 4.50
 }

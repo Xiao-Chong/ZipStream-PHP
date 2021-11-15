@@ -6,6 +6,12 @@
 [![Total Downloads](https://poser.pugx.org/maennchen/zipstream-php/downloads)](https://packagist.org/packages/maennchen/zipstream-php)
 [![Financial Contributors on Open Collective](https://opencollective.com/zipstream/all/badge.svg?label=financial+contributors)](https://opencollective.com/zipstream) [![License](https://img.shields.io/github/license/maennchen/zipstream-php.svg)](LICENSE)
 
+## About this fork version notes
+
+This fork version enchances the UTF8 encoding issue extracting by unzip app in *nix.  Also add correct file permission attribute to zip format.  Let zeroHeader to true as default value, so that can speed up the zip caculation by no rewind which same as streaming file for zip.
+
+Maybe will add more features in the future.
+
 ## Overview
 
 A fast and simple streaming zip file downloader for PHP. Using this library will save you from having to write the Zip to disk. You can directly send it to the user, which is much faster. It can work with S3 buckets or any PSR7 Stream.
